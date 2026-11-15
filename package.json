@@ -1,0 +1,20 @@
+{
+  "name": "job-intelligence",
+  "version": "0.1.0",
+  "description": "Job Intelligence — AI-платформа анализа рынка IT-вакансий (HeadHunter)",
+  "type": "module",
+  "scripts": {
+    "collect": "node src/collect.mjs",
+    "enrich": "node src/enrich.mjs",
+    "daily": "node src/run-daily.mjs",
+    "verify-closed": "node src/verify-closed.mjs",
+    "snapshot": "node src/snapshot.mjs",
+    "analyze:export": "node src/analyze-export.mjs",
+    "analyze:import": "node src/analyze-import.mjs",
+    "report": "node src/report.mjs",
+    "match": "node src/match.mjs",
+    "letters": "node src/letters.mjs",
+    "resume": "node src/resume.mjs",
+    "cockpit": "node src/cockpit.mjs"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Job Intelligence — подсказки на hh.ru",
+  "version": "0.1.0",
+  "description": "Показывает совпадение с профилем, причины и готовое письмо прямо на странице вакансии hh.ru. Требует запущенный локальный кокпит (localhost:8899). Отклик отправляет сам пользователь — расширение не кликает за него.",
+  "permissions": [],
+  "host_permissions": [
+    "https://hh.ru/*",
+    "http://127.0.0.1:8899/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://hh.ru/vacancy/*"],
+      "js": ["content.js"],
+      "css": ["panel.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

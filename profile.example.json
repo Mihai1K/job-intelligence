@@ -1,0 +1,21 @@
+{
+  "_comment": "Copy to profile.json and fill in. This file drives scoring, cover letters and resume variants.",
+  "name": "Your Name",
+  "hhResumeUrl": "https://hh.ru/resume/<id>",
+  "targetRoles": ["Python Developer", "AI Automation Engineer"],
+  "experienceYears": 1,
+  "experienceLevel": "junior",
+  "salaryTarget": 150000,
+  "salaryFloor": 100000,
+  "locations": ["Moscow"],
+  "remoteOnly": false,
+  "remotePreferred": true,
+  "skills": ["Python", "SQL", "Telegram Bot API"],
+  "wantToLearn": ["FastAPI", "Docker"],
+  "excludeKeywords": ["senior", "lead"],
+  "pitch": "One or two sentences about what you do.",
+  "highlights": ["A result you are ready to talk about."],
+  "experience": [
+    { "bullet": "What you did and what came out of it.", "tags": ["Python", "automation"] }
+  ]
+}

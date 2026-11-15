@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Job Intelligence — рынок IT сегодня</title>
+<style>
+  :root {
+    --surface-1: #fcfcfb; --page: #f9f9f7;
+    --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+    --grid: #e1e0d9; --border: rgba(11,11,11,0.10);
+    --series-1: #2a78d6; --series-2: #1baf7a; --series-3: #eda100;
+    --good: #006300;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --surface-1: #1a1a19; --page: #0d0d0d;
+      --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+      --grid: #2c2c2a; --border: rgba(255,255,255,0.10);
+      --series-1: #3987e5; --series-2: #199e70; --series-3: #c98500;
+      --good: #0ca30c;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--page); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; padding: 32px 20px 64px; }
+  .wrap { max-width: 1060px; margin: 0 auto; }
+  h1 { font-size: 26px; letter-spacing: -0.02em; }
+  .sub { color: var(--ink-2); margin: 6px 0 28px; }
+  h2 { font-size: 17px; margin: 40px 0 14px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+  .card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+  .card .label { font-size: 13px; color: var(--ink-2); }
+  .card .value { font-size: 30px; font-weight: 600; margin-top: 2px; }
+  .card .note { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .panel { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 760px) { .grid2 { grid-template-columns: 1fr; } }
+  .hrow { display: grid; grid-template-columns: 160px 1fr 92px; gap: 10px; align-items: center; padding: 4px 0; position: relative; }
+  .hlabel { font-size: 13px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .htrack { height: 18px; }
+  .hfill { height: 100%; background: var(--series-1); border-radius: 0 4px 4px 0; min-width: 2px; }
+  .hrow.alt .hfill { background: var(--series-2); }
+  .hvalue { font-size: 13px; text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); }
+  .cols { display: flex; align-items: flex-end; gap: 8px; height: 180px; padding-top: 8px; }
+  .col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 6px; position: relative; }
+  .colfill { width: 100%; max-width: 46px; background: var(--series-1); border-radius: 4px 4px 0 0; }
+  .colv { font-size: 12px; color: var(--ink-2); }
+  .colx { font-size: 12px; color: var(--muted); margin-top: 6px; text-align: center; }
+  .axis { border-top: 1px solid var(--grid); margin-top: 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { text-align: left; color: var(--muted); font-weight: 500; font-size: 12.5px; padding: 6px 10px; border-bottom: 1px solid var(--grid); }
+  td { padding: 7px 10px; border-bottom: 1px solid var(--grid); }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tr:last-child td { border-bottom: none; }
+  a { color: var(--series-1); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .pill { display: inline-block; font-size: 12px; padding: 1px 8px; border: 1px solid var(--border); border-radius: 99px; color: var(--ink-2); margin: 0 4px 4px 0; }
+  .pill.req { border-color: var(--series-1); }
+  .ai-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+  .ai-card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 16px; font-size: 13.5px; }
+  .ai-card h3 { font-size: 14.5px; margin-bottom: 2px; }
+  .ai-meta { color: var(--muted); font-size: 12.5px; margin-bottom: 8px; }
+  .ai-level { font-weight: 600; color: var(--ink); }
+  .roadmap { margin: 8px 0 0 0; padding-left: 18px; color: var(--ink-2); }
+  .roadmap li { margin: 2px 0; }
+  .footer { color: var(--muted); font-size: 12.5px; margin-top: 48px; }
+  .status { display: flex; flex-wrap: wrap; gap: 6px 18px; background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; margin: 0 0 20px; font-size: 13px; color: var(--ink-2); }
+  .status b { color: var(--ink); font-weight: 600; }
+  .status.bad { border-color: #d03b3b; }
+  .delta.up { color: var(--good); }
+  .delta.down { color: #d03b3b; }
+  .delta.flat { color: var(--muted); }
+  .hero { margin: 0 0 24px; font-size: 15.5px; }
+  .hero p { margin: 10px 0 0; }
+  .wow { font-size: 17px; }
+  .head-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+  .mode-btn { background: var(--surface-1); border: 1px solid var(--border); border-radius: 99px; padding: 7px 16px; font-size: 13px; color: var(--ink); cursor: pointer; white-space: nowrap; margin-top: 6px; }
+  .mode-btn:hover { border-color: var(--series-1); }
+  .conf { color: var(--muted); font-size: 12px; white-space: nowrap; }
+  body.insights .detail { display: none; }
+  .insights-only { display: none; }
+  body.insights .insights-only { display: block; }
+  .insights-list { margin: 0; padding-left: 20px; }
+  .insights-list li { margin: 8px 0; color: var(--ink-2); }
+  .insights-list b { color: var(--ink); }
+  .conclusion { background: var(--surface-1); border-left: 3px solid var(--series-1); border-radius: 0 8px 8px 0; padding: 10px 14px; margin: 10px 0 0; font-size: 14px; color: var(--ink-2); }
+  .conclusion b { color: var(--ink); }
+  #tip { position: fixed; pointer-events: none; background: var(--ink); color: var(--page); font-size: 12.5px; padding: 5px 9px; border-radius: 7px; opacity: 0; transition: opacity .12s; z-index: 10; max-width: 320px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head-row">
+    <div>
+      <h1>Рынок IT сегодня</h1>
+      <p class="sub">Job Intelligence · данные hh.ru, Россия · зарплаты приведены к «на руки, ₽/мес»</p>
+    </div>
+    <button id="modeBtn" class="mode-btn">Только выводы</button>
+  </div>
+
+  
+  <div class="status bad">
+    <span><b>Последний сбор:</b> 7 ноября 2026 г. в 16:53 · <b>с ошибками</b></span>
+    <span>Собрано: <b>531</b></span>
+    <span>Новых: <b>30</b></span>
+    <span>Обновлено: <b>1</b></span>
+    <span>Закрыто: <b>0</b></span>
+    <span>Ошибок: <b>13</b></span>
+  </div>
+
+  
+  <div class="panel hero">
+    <div class="wow">🤖 AI проанализировал <b>531</b> вакансий и нашёл <b>2 808</b> уникальных навыков</div>
+    <p>Больше всего рынок сейчас нанимает: <b>Python Developer, Fullstack Developer, Backend Developer</b>.
+    Удалёнка доступна в <b>48%</b> вакансий, но позиций «без опыта» всего <b>6%</b> — вход через стажировки закрыт, реальная точка входа — junior-роли с 1–3 годами практики или собственными проектами.</p>
+    <p>AI-навыки перестали быть нишей: <b>LLM уже на 9-м месте</b> среди всех технологий рынка <span class="conf">★★★★★ · 559 вакансий</span>, а LLM Engineer — самая высокооплачиваемая роль выборки (191 000 ₽).
+    Самый короткий путь для старта сегодня: <b>JavaScript → PostgreSQL → React → Docker</b> <span class="conf">★★★★★ · 322 вакансий</span>.</p>
+  </div>
+
+  
+  <h2>Если начинать сегодня</h2>
+  <div class="cards">
+    <div class="card"><div class="label">Самое выгодное направление</div><div class="value" style="font-size:22px">Fullstack Developer</div><div class="note">322 вакансий на hh</div></div>
+    <div class="card"><div class="label">Медианная зарплата</div><div class="value">174 000 ₽</div><div class="note">на руки, по 645 вакансиям</div></div>
+    <div class="card"><div class="label">Удалёнка</div><div class="value">52%</div><div class="note">опыт до 3 лет: 29% вакансий</div></div>
+    <div class="card"><div class="label">До первого оффера</div><div class="value">6–10 мес</div><div class="note">оценка модели при ~10 ч обучения в неделю</div></div>
+  </div>
+  <div class="panel" style="margin-top:12px">
+    <b style="font-size:13.5px">Что учить (по частоте в вакансиях этой роли):</b>
+    <div style="margin-top:8px"><span class="pill req">JavaScript · 667</span><span class="pill req">PostgreSQL · 519</span><span class="pill req">React · 486</span><span class="pill req">Docker · 464</span><span class="pill req">CI/CD · 372</span></div>
+  </div>
+
+  <div class="detail">
+  <h2>Главные цифры</h2>
+  <div class="cards">
+    <div class="card"><div class="label">Вакансий в базе</div><div class="value">8 560</div><div class="note">3 334 компаний</div></div>
+    <div class="card"><div class="label">Медианная зарплата</div><div class="value">140 000 ₽</div><div class="note">указана в 3102 вакансиях</div></div>
+    <div class="card"><div class="label">Удалёнка</div><div class="value">48%</div><div class="note">доступен формат remote</div></div>
+    <div class="card"><div class="label">Без опыта</div><div class="value">6%</div><div class="note">вакансий для старта</div></div>
+  </div>
+  </div>
+
+  
+  <h2>Динамика рынка <span style="color:var(--muted); font-weight:400; font-size:13px">(с 27.10.2026 по 06.11.2026)</span></h2>
+  <div class="grid2">
+    <div class="panel">
+      <h3 style="font-size:14px; margin-bottom:10px">Роли: изменение числа вакансий</h3>
+      <table>
+        <tr><th>Роль</th><th style="text-align:right">Вакансий</th><th style="text-align:right">Изменение</th></tr>
+        <tr><td>Vibe coding / AI-assisted</td><td class="num">24</td><td class="num"><span class="delta up">▲ +50.0%</span></td></tr><tr><td>AI Product Engineer</td><td class="num">26</td><td class="num"><span class="delta up">▲ +18.2%</span></td></tr><tr><td>AI Automation Engineer</td><td class="num">77</td><td class="num"><span class="delta up">▲ +11.6%</span></td></tr><tr><td>AI Engineer</td><td class="num">111</td><td class="num"><span class="delta down">▼ -0.9%</span></td></tr><tr><td>LLM Engineer</td><td class="num">109</td><td class="num"><span class="delta down">▼ -1.8%</span></td></tr><tr><td>TypeScript Developer</td><td class="num">42</td><td class="num"><span class="delta down">▼ -2.3%</span></td></tr><tr><td>Python Developer</td><td class="num">394</td><td class="num"><span class="delta down">▼ -7.7%</span></td></tr><tr><td>React/Frontend Developer</td><td class="num">201</td><td class="num"><span class="delta down">▼ -9.9%</span></td></tr><tr><td>Backend Developer</td><td class="num">288</td><td class="num"><span class="delta down">▼ -11.4%</span></td></tr><tr><td>Битрикс/amoCRM</td><td class="num">171</td><td class="num"><span class="delta down">▼ -11.4%</span></td></tr><tr><td>Fullstack Developer</td><td class="num">322</td><td class="num"><span class="delta down">▼ -13.0%</span></td></tr><tr><td>Node.js Developer</td><td class="num">38</td><td class="num"><span class="delta down">▼ -17.4%</span></td></tr><tr><td>Prompt Engineer</td><td class="num">9</td><td class="num"><span class="delta down">▼ -18.2%</span></td></tr><tr><td>Integration Engineer</td><td class="num">16</td><td class="num"><span class="delta down">▼ -20.0%</span></td></tr><tr><td>CRM Developer</td><td class="num">23</td><td class="num"><span class="delta down">▼ -20.7%</span></td></tr><tr><td>No-Code Developer</td><td class="num">2</td><td class="num"><span class="delta down">▼ -50.0%</span></td></tr>
+      </table>
+    </div>
+    <div class="panel">
+      <h3 style="font-size:14px; margin-bottom:10px">Технологии: изменение доли вакансий</h3>
+      <table>
+        <tr><th>Навык</th><th style="text-align:right">Доля</th><th style="text-align:right">Изменение</th></tr>
+        <tr><td>Python</td><td class="num">60%</td><td class="num"><span class="delta up">▲ +2.5 п.п.</span></td></tr><tr><td>React</td><td class="num">26%</td><td class="num"><span class="delta up">▲ +0.7 п.п.</span></td></tr><tr><td>LLM</td><td class="num">28%</td><td class="num"><span class="delta up">▲ +0.6 п.п.</span></td></tr><tr><td>JavaScript</td><td class="num">38%</td><td class="num"><span class="delta up">▲ +0.5 п.п.</span></td></tr><tr><td>TypeScript</td><td class="num">26%</td><td class="num"><span class="delta up">▲ +0.4 п.п.</span></td></tr><tr><td>Java</td><td class="num">13%</td><td class="num"><span class="delta up">▲ +0.4 п.п.</span></td></tr><tr><td>PHP</td><td class="num">17%</td><td class="num"><span class="delta up">▲ +0.3 п.п.</span></td></tr><tr><td>C#</td><td class="num">7%</td><td class="num"><span class="delta up">▲ +0.3 п.п.</span></td></tr>
+        <tr><td colspan="3" style="color:var(--muted)">…и 327 ниже</td></tr>
+      </table>
+    </div>
+  </div>
+
+  
+  <h2>ROI обучения <span style="color:var(--muted); font-weight:400; font-size:13px">(прирост — из данных: медиана вакансий с навыком против рынка; сроки — оценка модели)</span></h2>
+  <div class="panel">
+    <table>
+      <tr><th>Навык</th><th style="text-align:right">Освоение</th><th style="text-align:right">Прирост к медиане</th><th style="text-align:right">ROI</th><th style="text-align:right">Достоверность</th></tr>
+      <tr>
+        <td>CI/CD</td>
+        <td class="num">~2 нед.</td>
+        <td class="num">+51 тыс. ₽</td>
+        <td class="num">Очень высокий</td>
+        <td class="num"><span class="conf">★★★★★ · 376</span></td>
+      </tr><tr>
+        <td>Redis</td>
+        <td class="num">~2 нед.</td>
+        <td class="num">+37 тыс. ₽</td>
+        <td class="num">Очень высокий</td>
+        <td class="num"><span class="conf">★★★★★ · 410</span></td>
+      </tr><tr>
+        <td>Docker</td>
+        <td class="num">~2 нед.</td>
+        <td class="num">+35 тыс. ₽</td>
+        <td class="num">Очень высокий</td>
+        <td class="num"><span class="conf">★★★★★ · 688</span></td>
+      </tr><tr>
+        <td>Kafka</td>
+        <td class="num">~4 нед.</td>
+        <td class="num">+60 тыс. ₽</td>
+        <td class="num">Очень высокий</td>
+        <td class="num"><span class="conf">★★★★☆ · 206</span></td>
+      </tr><tr>
+        <td>PostgreSQL</td>
+        <td class="num">~3 нед.</td>
+        <td class="num">+34 тыс. ₽</td>
+        <td class="num">Очень высокий</td>
+        <td class="num"><span class="conf">★★★★★ · 697</span></td>
+      </tr><tr>
+        <td>Kubernetes</td>
+        <td class="num">~8 нед.</td>
+        <td class="num">+81 тыс. ₽</td>
+        <td class="num">Очень высокий</td>
+        <td class="num"><span class="conf">★★★★☆ · 222</span></td>
+      </tr><tr>
+        <td>FastAPI</td>
+        <td class="num">~3 нед.</td>
+        <td class="num">+23 тыс. ₽</td>
+        <td class="num">Высокий</td>
+        <td class="num"><span class="conf">★★★★☆ · 269</span></td>
+      </tr><tr>
+        <td>LLM</td>
+        <td class="num">~4 нед.</td>
+        <td class="num">+30 тыс. ₽</td>
+        <td class="num">Высокий</td>
+        <td class="num"><span class="conf">★★★★★ · 327</span></td>
+      </tr>
+    </table>
+    <p style="color:var(--muted); font-size:12.5px; margin-top:10px">Прирост — корреляция, а не гарантия: часть разницы объясняется тем, что навык чаще встречается в senior-вакансиях.</p>
+  </div>
+
+  
+  <div class="insights-only">
+    <h2>Главные выводы</h2>
+    <div class="panel"><ul class="insights-list"><li>LLM Engineer сейчас оплачивается выше всех — разница <b>+138%</b> к Vibe coding / AI-assisted. AI-роли в среднем дороже классической разработки. <span class="conf">★★★★★ · 3 102 вак.</span></li><li>База рынка неизменна — Python, PostgreSQL, Docker, SQL. Но обрати внимание: <b>LLM уже на 9-м месте</b> — AI-навыки вошли в мейнстрим найма. <span class="conf">★★★★★ · 7 706 вак.</span></li><li>Самый большой скачок зарплаты — переход «1–3 года» → «3–6 лет»: <b>+90 тыс. ₽</b>. Первые 3 года опыта окупаются сильнее всего. <span class="conf">★★★★★ · 3 102 вак.</span></li></ul></div>
+  </div>
+
+  <div class="detail">
+  <h2>Зарплаты по ролям (медиана, на руки)</h2>
+  <div class="panel">
+    
+      <div class="hrow" data-tip="LLM Engineer: 191 000 ₽ · 114 вакансий с зарплатой, удалёнка 43%">
+        <div class="hlabel">LLM Engineer</div>
+        <div class="htrack"><div class="hfill" style="width:100.0%"></div></div>
+        <div class="hvalue">191 000 ₽</div>
+      </div>
+      <div class="hrow" data-tip="Fullstack Developer: 174 000 ₽ · 645 вакансий с зарплатой, удалёнка 52%">
+        <div class="hlabel">Fullstack Developer</div>
+        <div class="htrack"><div class="hfill" style="width:91.2%"></div></div>
+        <div class="hvalue">174 000 ₽</div>
+      </div>
+      <div class="hrow" data-tip="Node.js Developer: 172 000 ₽ · 106 вакансий с зарплатой, удалёнка 57%">
+        <div class="hlabel">Node.js Developer</div>
+        <div class="htrack"><div class="hfill" style="width:90.2%"></div></div>
+        <div class="hvalue">172 000 ₽</div>
+      </div>
+      <div class="hrow" data-tip="AI Engineer: 170 000 ₽ · 171 вакансий с зарплатой, удалёнка 44%">
+        <div class="hlabel">AI Engineer</div>
+        <div class="htrack"><div class="hfill" style="width:89.1%"></div></div>
+        <div class="hvalue">170 000 ₽</div>
+      </div>
+      <div class="hrow" data-tip="TypeScript Developer: 170 000 ₽ · 114 вакансий с зарплатой, удалёнка 61%">
+        <div class="hlabel">TypeScript Developer</div>
+        <div class="htrack"><div class="hfill" style="width:88.9%"></div></div>
+        <div class="hvalue">170 000 ₽</div>
+      </div>
+      <div class="hrow" data-tip="Backend Developer: 160 000 ₽ · 603 вакансий с зарплатой, удалёнка 49%">
+        <div class="hlabel">Backend Developer</div>
+        <div class="htrack"><div class="hfill" style="width:83.9%"></div></div>
+        <div class="hvalue">160 000 ₽</div>
+      </div>
+      <div class="hrow" data-tip="React/Frontend Developer: 153 000 ₽ · 376 вакансий с зарплатой, удалёнка 53%">
+        <div class="hlabel">React/Frontend Developer</div>
+        <div class="htrack"><div class="hfill" style="width:80.0%"></div></div>
+        <div class="hvalue">153 000 ₽</div>
+      </div>
+      <div class="hrow" data-tip="Integration Engineer: 147 000 ₽ · 36 вакансий с зарплатой, удалёнка 40%">
+        <div class="hlabel">Integration Engineer</div>
+        <div class="htrack"><div class="hfill" style="width:77.0%"></div></div>
+        <div class="hvalue">147 000 ₽</div>
+      </div>
+      <div class="hrow" data-tip="Python Developer: 139 000 ₽ · 635 вакансий с зарплатой, удалёнка 45%">
+        <div class="hlabel">Python Developer</div>
+        <div class="htrack"><div class="hfill" style="width:73.0%"></div></div>
+        <div class="hvalue">139 000 ₽</div>
+      </div>
+      <div class="hrow" data-tip="AI Product Engineer: 135 000 ₽ · 19 вакансий с зарплатой, удалёнка 40%">
+        <div class="hlabel">AI Product Engineer</div>
+        <div class="htrack"><div class="hfill" style="width:70.8%"></div></div>
+        <div class="hvalue">135 000 ₽</div>
+      </div>
+      <div class="hrow" data-tip="Prompt Engineer: 130 000 ₽ · 17 вакансий с зарплатой, удалёнка 44%">
+        <div class="hlabel">Prompt Engineer</div>
+        <div class="htrack"><div class="hfill" style="width:68.2%"></div></div>
+        <div class="hvalue">130 000 ₽</div>
+      </div>
+      <div class="hrow" data-tip="AI Automation Engineer: 120 000 ₽ · 178 вакансий с зарплатой, удалёнка 44%">
+        <div class="hlabel">AI Automation Engineer</div>
+        <div class="htrack"><div class="hfill" style="width:62.9%"></div></div>
+        <div class="hvalue">120 000 ₽</div>
+      </div>
+      <div class="hrow" data-tip="No-Code Developer: 105 000 ₽ · 22 вакансий с зарплатой, удалёнка 66%">
+        <div class="hlabel">No-Code Developer</div>
+        <div class="htrack"><div class="hfill" style="width:54.9%"></div></div>
+        <div class="hvalue">105 000 ₽</div>
+      </div>
+      <div class="hrow" data-tip="Битрикс/amoCRM: 100 000 ₽ · 581 вакансий с зарплатой, удалёнка 48%">
+        <div class="hlabel">Битрикс/amoCRM</div>
+        <div class="htrack"><div class="hfill" style="width:52.4%"></div></div>
+        <div class="hvalue">100 000 ₽</div>
+      </div>
+      <div class="hrow" data-tip="CRM Developer: 100 000 ₽ · 72 вакансий с зарплатой, удалёнка 36%">
+        <div class="hlabel">CRM Developer</div>
+        <div class="htrack"><div class="hfill" style="width:52.4%"></div></div>
+        <div class="hvalue">100 000 ₽</div>
+      </div>
+      <div class="hrow" data-tip="Vibe coding / AI-assisted: 80 000 ₽ · 69 вакансий с зарплатой, удалёнка 59%">
+        <div class="hlabel">Vibe coding / AI-assisted</div>
+        <div class="htrack"><div class="hfill" style="width:42.0%"></div></div>
+        <div class="hvalue">80 000 ₽</div>
+      </div>
+    <p style="color:var(--muted); font-size:12.5px; margin-top:10px">Показаны роли, где зарплата указана минимум в 5 вакансиях.</p>
+  </div>
+  <div class="conclusion"><b>Вывод:</b> LLM Engineer сейчас оплачивается выше всех — разница <b>+138%</b> к Vibe coding / AI-assisted. AI-роли в среднем дороже классической разработки. <span class="conf">★★★★★ · 3 102 вак.</span></div>
+
+  <div class="grid2">
+    <div>
+      <h2>Спрос по ролям (вакансий на hh)</h2>
+      <div class="panel">
+        
+      <div class="hrow" data-tip="Python Developer: 408 · в базе 2091">
+        <div class="hlabel">Python Developer</div>
+        <div class="htrack"><div class="hfill" style="width:100.0%"></div></div>
+        <div class="hvalue">408</div>
+      </div>
+      <div class="hrow" data-tip="Fullstack Developer: 322 · в базе 1864">
+        <div class="hlabel">Fullstack Developer</div>
+        <div class="htrack"><div class="hfill" style="width:78.9%"></div></div>
+        <div class="hvalue">322</div>
+      </div>
+      <div class="hrow" data-tip="Backend Developer: 287 · в базе 1514">
+        <div class="hlabel">Backend Developer</div>
+        <div class="htrack"><div class="hfill" style="width:70.3%"></div></div>
+        <div class="hvalue">287</div>
+      </div>
+      <div class="hrow" data-tip="React/Frontend Developer: 201 · в базе 1123">
+        <div class="hlabel">React/Frontend Developer</div>
+        <div class="htrack"><div class="hfill" style="width:49.3%"></div></div>
+        <div class="hvalue">201</div>
+      </div>
+      <div class="hrow" data-tip="Битрикс/amoCRM: 171 · в базе 917">
+        <div class="hlabel">Битрикс/amoCRM</div>
+        <div class="htrack"><div class="hfill" style="width:41.9%"></div></div>
+        <div class="hvalue">171</div>
+      </div>
+      <div class="hrow" data-tip="LLM Engineer: 112 · в базе 559">
+        <div class="hlabel">LLM Engineer</div>
+        <div class="htrack"><div class="hfill" style="width:27.5%"></div></div>
+        <div class="hvalue">112</div>
+      </div>
+      <div class="hrow" data-tip="AI Engineer: 111 · в базе 563">
+        <div class="hlabel">AI Engineer</div>
+        <div class="htrack"><div class="hfill" style="width:27.2%"></div></div>
+        <div class="hvalue">111</div>
+      </div>
+      <div class="hrow" data-tip="AI Automation Engineer: 77 · в базе 318">
+        <div class="hlabel">AI Automation Engineer</div>
+        <div class="htrack"><div class="hfill" style="width:18.9%"></div></div>
+        <div class="hvalue">77</div>
+      </div>
+      <div class="hrow" data-tip="TypeScript Developer: 42 · в базе 256">
+        <div class="hlabel">TypeScript Developer</div>
+        <div class="htrack"><div class="hfill" style="width:10.3%"></div></div>
+        <div class="hvalue">42</div>
+      </div>
+      <div class="hrow" data-tip="Node.js Developer: 38 · в базе 281">
+        <div class="hlabel">Node.js Developer</div>
+        <div class="htrack"><div class="hfill" style="width:9.3%"></div></div>
+        <div class="hvalue">38</div>
+      </div>
+      <div class="hrow" data-tip="AI Product Engineer: 26 · в базе 96">
+        <div class="hlabel">AI Product Engineer</div>
+        <div class="htrack"><div class="hfill" style="width:6.4%"></div></div>
+        <div class="hvalue">26</div>
+      </div>
+      <div class="hrow" data-tip="Vibe coding / AI-assisted: 24 · в базе 122">
+        <div class="hlabel">Vibe coding / AI-assisted</div>
+        <div class="htrack"><div class="hfill" style="width:5.9%"></div></div>
+        <div class="hvalue">24</div>
+      </div>
+      <div class="hrow" data-tip="CRM Developer: 23 · в базе 141">
+        <div class="hlabel">CRM Developer</div>
+        <div class="htrack"><div class="hfill" style="width:5.6%"></div></div>
+        <div class="hvalue">23</div>
+      </div>
+      <div class="hrow" data-tip="Integration Engineer: 16 · в базе 102">
+        <div class="hlabel">Integration Engineer</div>
+        <div class="htrack"><div class="hfill" style="width:3.9%"></div></div>
+        <div class="hvalue">16</div>
+      </div>
+      <div class="hrow" data-tip="Prompt Engineer: 8 · в базе 101">
+        <div class="hlabel">Prompt Engineer</div>
+        <div class="htrack"><div class="hfill" style="width:2.0%"></div></div>
+        <div class="hvalue">8</div>
+      </div>
+      <div class="hrow" data-tip="No-Code Developer: 2 · в базе 32">
+        <div class="hlabel">No-Code Developer</div>
+        <div class="htrack"><div class="hfill" style="width:2.0%"></div></div>
+        <div class="hvalue">2</div>
+      </div>
+      </div>
+    </div>
+    <div>
+      <h2>Распределение зарплат (тыс. ₽)</h2>
+      <div class="panel">
+        <div class="cols">
+          <div class="col" data-tip="до 100 тыс. ₽: 807 вакансий">
+              <div class="colv">807</div>
+              <div class="colfill" style="height:128.88206388206387px"></div>
+            </div><div class="col" data-tip="100–150 тыс. ₽: 814 вакансий">
+              <div class="colv">814</div>
+              <div class="colfill" style="height:130px"></div>
+            </div><div class="col" data-tip="150–200 тыс. ₽: 562 вакансий">
+              <div class="colv">562</div>
+              <div class="colfill" style="height:89.75429975429975px"></div>
+            </div><div class="col" data-tip="200–250 тыс. ₽: 417 вакансий">
+              <div class="colv">417</div>
+              <div class="colfill" style="height:66.5970515970516px"></div>
+            </div><div class="col" data-tip="250–300 тыс. ₽: 258 вакансий">
+              <div class="colv">258</div>
+              <div class="colfill" style="height:41.203931203931205px"></div>
+            </div><div class="col" data-tip="300–400 тыс. ₽: 164 вакансий">
+              <div class="colv">164</div>
+              <div class="colfill" style="height:26.191646191646193px"></div>
+            </div><div class="col" data-tip="400+ тыс. ₽: 80 вакансий">
+              <div class="colv">80</div>
+              <div class="colfill" style="height:12.776412776412776px"></div>
+            </div>
+        </div>
+        <div class="axis"></div>
+        <div style="display:flex; gap:8px"><div class="colx" style="flex:1">до 100</div><div class="colx" style="flex:1">100–150</div><div class="colx" style="flex:1">150–200</div><div class="colx" style="flex:1">200–250</div><div class="colx" style="flex:1">250–300</div><div class="colx" style="flex:1">300–400</div><div class="colx" style="flex:1">400+</div></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Самые востребованные технологии</h2>
+  <div class="panel">
+    
+      <div class="hrow" data-tip="Python: 3193 ваканс. · по ключевым навыкам hh + анализу описаний">
+        <div class="hlabel">Python</div>
+        <div class="htrack"><div class="hfill" style="width:100.0%"></div></div>
+        <div class="hvalue">3193 ваканс.</div>
+      </div>
+      <div class="hrow" data-tip="API-интеграции: 2987 ваканс. · по ключевым навыкам hh + анализу описаний">
+        <div class="hlabel">API-интеграции</div>
+        <div class="htrack"><div class="hfill" style="width:93.5%"></div></div>
+        <div class="hvalue">2987 ваканс.</div>
+      </div>
+      <div class="hrow" data-tip="REST API: 2328 ваканс. · по ключевым навыкам hh + анализу описаний">
+        <div class="hlabel">REST API</div>
+        <div class="htrack"><div class="hfill" style="width:72.9%"></div></div>
+        <div class="hvalue">2328 ваканс.</div>
+      </div>
+      <div class="hrow" data-tip="Git: 2035 ваканс. · по ключевым навыкам hh + анализу описаний">
+        <div class="hlabel">Git</div>
+        <div class="htrack"><div class="hfill" style="width:63.7%"></div></div>
+        <div class="hvalue">2035 ваканс.</div>
+      </div>
+      <div class="hrow" data-tip="Docker: 2011 ваканс. · по ключевым навыкам hh + анализу описаний">
+        <div class="hlabel">Docker</div>
+        <div class="htrack"><div class="hfill" style="width:63.0%"></div></div>
+        <div class="hvalue">2011 ваканс.</div>
+      </div>
+      <div class="hrow" data-tip="PostgreSQL: 1974 ваканс. · по ключевым навыкам hh + анализу описаний">
+        <div class="hlabel">PostgreSQL</div>
+        <div class="htrack"><div class="hfill" style="width:61.8%"></div></div>
+        <div class="hvalue">1974 ваканс.</div>
+      </div>
+      <div class="hrow" data-tip="JavaScript: 1942 ваканс. · по ключевым навыкам hh + анализу описаний">
+        <div class="hlabel">JavaScript</div>
+        <div class="htrack"><div class="hfill" style="width:60.8%"></div></div>
+        <div class="hvalue">1942 ваканс.</div>
+      </div>
+      <div class="hrow" data-tip="SQL: 1856 ваканс. · по ключевым навыкам hh + анализу описаний">
+        <div class="hlabel">SQL</div>
+        <div class="htrack"><div class="hfill" style="width:58.1%"></div></div>
+        <div class="hvalue">1856 ваканс.</div>
+      </div>
+      <div class="hrow" data-tip="LLM: 1403 ваканс. · по ключевым навыкам hh + анализу описаний">
+        <div class="hlabel">LLM</div>
+        <div class="htrack"><div class="hfill" style="width:43.9%"></div></div>
+        <div class="hvalue">1403 ваканс.</div>
+      </div>
+      <div class="hrow" data-tip="CI/CD: 1353 ваканс. · по ключевым навыкам hh + анализу описаний">
+        <div class="hlabel">CI/CD</div>
+        <div class="htrack"><div class="hfill" style="width:42.4%"></div></div>
+        <div class="hvalue">1353 ваканс.</div>
+      </div>
+      <div class="hrow" data-tip="TypeScript: 1303 ваканс. · по ключевым навыкам hh + анализу описаний">
+        <div class="hlabel">TypeScript</div>
+        <div class="htrack"><div class="hfill" style="width:40.8%"></div></div>
+        <div class="hvalue">1303 ваканс.</div>
+      </div>
+      <div class="hrow" data-tip="React: 1268 ваканс. · по ключевым навыкам hh + анализу описаний">
+        <div class="hlabel">React</div>
+        <div class="htrack"><div class="hfill" style="width:39.7%"></div></div>
+        <div class="hvalue">1268 ваканс.</div>
+      </div>
+      <div class="hrow" data-tip="Redis: 1009 ваканс. · по ключевым навыкам hh + анализу описаний">
+        <div class="hlabel">Redis</div>
+        <div class="htrack"><div class="hfill" style="width:31.6%"></div></div>
+        <div class="hvalue">1009 ваканс.</div>
+      </div>
+      <div class="hrow" data-tip="Linux: 945 ваканс. · по ключевым навыкам hh + анализу описаний">
+        <div class="hlabel">Linux</div>
+        <div class="htrack"><div class="hfill" style="width:29.6%"></div></div>
+        <div class="hvalue">945 ваканс.</div>
+      </div>
+      <div class="hrow" data-tip="Kubernetes: 928 ваканс. · по ключевым навыкам hh + анализу описаний">
+        <div class="hlabel">Kubernetes</div>
+        <div class="htrack"><div class="hfill" style="width:29.1%"></div></div>
+        <div class="hvalue">928 ваканс.</div>
+      </div>
+      <div class="hrow" data-tip="Kafka: 894 ваканс. · по ключевым навыкам hh + анализу описаний">
+        <div class="hlabel">Kafka</div>
+        <div class="htrack"><div class="hfill" style="width:28.0%"></div></div>
+        <div class="hvalue">894 ваканс.</div>
+      </div>
+      <div class="hrow" data-tip="PHP: 890 ваканс. · по ключевым навыкам hh + анализу описаний">
+        <div class="hlabel">PHP</div>
+        <div class="htrack"><div class="hfill" style="width:27.9%"></div></div>
+        <div class="hvalue">890 ваканс.</div>
+      </div>
+      <div class="hrow" data-tip="FastAPI: 833 ваканс. · по ключевым навыкам hh + анализу описаний">
+        <div class="hlabel">FastAPI</div>
+        <div class="htrack"><div class="hfill" style="width:26.1%"></div></div>
+        <div class="hvalue">833 ваканс.</div>
+      </div>
+      <div class="hrow" data-tip="RabbitMQ: 741 ваканс. · по ключевым навыкам hh + анализу описаний">
+        <div class="hlabel">RabbitMQ</div>
+        <div class="htrack"><div class="hfill" style="width:23.2%"></div></div>
+        <div class="hvalue">741 ваканс.</div>
+      </div>
+      <div class="hrow" data-tip="Machine Learning: 712 ваканс. · по ключевым навыкам hh + анализу описаний">
+        <div class="hlabel">Machine Learning</div>
+        <div class="htrack"><div class="hfill" style="width:22.3%"></div></div>
+        <div class="hvalue">712 ваканс.</div>
+      </div>
+  </div>
+  <div class="conclusion"><b>Вывод:</b> База рынка неизменна — Python, PostgreSQL, Docker, SQL. Но обрати внимание: <b>LLM уже на 9-м месте</b> — AI-навыки вошли в мейнстрим найма. <span class="conf">★★★★★ · 7 706 вак.</span></div>
+
+  <div class="grid2">
+    <div>
+      <h2>Опыт: сколько требуют и сколько платят</h2>
+      <div class="panel">
+        <table>
+          <tr><th>Опыт</th><th style="text-align:right">Вакансий</th><th style="text-align:right">Медиана, на руки</th></tr>
+          <tr><td>Без опыта</td><td class="num">533</td><td class="num">65 000 ₽</td></tr><tr><td>1–3 года</td><td class="num">2782</td><td class="num">110 000 ₽</td></tr><tr><td>3–6 лет</td><td class="num">4117</td><td class="num">200 000 ₽</td></tr><tr><td>6+ лет</td><td class="num">1128</td><td class="num">270 000 ₽</td></tr>
+        </table>
+        <div class="conclusion"><b>Вывод:</b> Самый большой скачок зарплаты — переход «1–3 года» → «3–6 лет»: <b>+90 тыс. ₽</b>. Первые 3 года опыта окупаются сильнее всего. <span class="conf">★★★★★ · 3 102 вак.</span></div>
+      </div>
+    </div>
+    <div>
+      <h2>Кто нанимает больше всех</h2>
+      <div class="panel">
+        <table>
+          <tr><th>Компания</th><th style="text-align:right">Вакансий в выборке</th></tr>
+          <tr><td>Сбер. IT</td><td class="num">646</td></tr><tr><td>Алабуга. IT</td><td class="num">215</td></tr><tr><td>Альфа-Банк. ИТ-специалисты</td><td class="num">84</td></tr><tr><td>Т-Банк. ИТ. Разработка</td><td class="num">82</td></tr><tr><td>Ozon Банк <span class="pill">аккредит. IT</span></td><td class="num">58</td></tr><tr><td>&quot;МТС&quot;, Работа в IT <span class="pill">аккредит. IT</span></td><td class="num">55</td></tr><tr><td>Aston <span class="pill">аккредит. IT</span></td><td class="num">52</td></tr><tr><td>ИЦ АЙ-ТЕКО</td><td class="num">49</td></tr><tr><td>Финтех </td><td class="num">48</td></tr><tr><td>Лига Цифровой Экономики <span class="pill">аккредит. IT</span></td><td class="num">47</td></tr><tr><td>Bell Integrator <span class="pill">аккредит. IT</span></td><td class="num">45</td></tr><tr><td>IBS <span class="pill">аккредит. IT</span></td><td class="num">44</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <h2>Точки входа: удалёнка + опыт до 3 лет + зарплата указана</h2>
+  <div class="panel">
+    <table>
+      <tr><th>Вакансия</th><th>Компания</th><th>Опыт</th><th style="text-align:right">На руки, до</th></tr>
+      <tr>
+        <td><a href="https://hh.ru/vacancy/135289958" target="_blank" rel="noopener">Ассистент руководителя отдела продаж (IT, AI-автоматизация)</a></td>
+        <td>Hard-sales</td>
+        <td>1–3 года</td>
+        <td class="num">350 000 ₽</td>
+      </tr><tr>
+        <td><a href="https://hh.ru/vacancy/136745136" target="_blank" rel="noopener">Project manager/Fullstack Developer (Next.js + Go)/Tech Lead</a></td>
+        <td>Миннегалеев Ильшат Азуатович</td>
+        <td>Без опыта</td>
+        <td class="num">338 000 ₽</td>
+      </tr><tr>
+        <td><a href="https://hh.ru/vacancy/136327554" target="_blank" rel="noopener">AI Product Manager (Product Builder)</a></td>
+        <td>WaiWai</td>
+        <td>1–3 года</td>
+        <td class="num">300 000 ₽</td>
+      </tr><tr>
+        <td><a href="https://hh.ru/vacancy/136915893" target="_blank" rel="noopener">Frontend-разработчик</a></td>
+        <td>ЦЕНТРСВЕТ</td>
+        <td>1–3 года</td>
+        <td class="num">300 000 ₽</td>
+      </tr><tr>
+        <td><a href="https://hh.ru/vacancy/137134868" target="_blank" rel="noopener">Руководитель проектов / Project Manager / Ambassador CRM, 1С и AI-внедрений</a></td>
+        <td>Примо Айти</td>
+        <td>1–3 года</td>
+        <td class="num">290 000 ₽</td>
+      </tr><tr>
+        <td><a href="https://hh.ru/vacancy/137799855" target="_blank" rel="noopener">AI инженер (команда LLM Evals)</a></td>
+        <td>HeadHunter::Analytics/Data Science</td>
+        <td>1–3 года</td>
+        <td class="num">261 000 ₽</td>
+      </tr><tr>
+        <td><a href="https://hh.ru/vacancy/135216501" target="_blank" rel="noopener">Разработчик Fullstack (JS+Java+AI)</a></td>
+        <td>Bell Integrator</td>
+        <td>Без опыта</td>
+        <td class="num">260 000 ₽</td>
+      </tr><tr>
+        <td><a href="https://hh.ru/vacancy/137143908" target="_blank" rel="noopener">Таргетолог / Performance-специалист / Ambassador CRM и AI-автоматизации</a></td>
+        <td>Примо Айти</td>
+        <td>1–3 года</td>
+        <td class="num">252 000 ₽</td>
+      </tr><tr>
+        <td><a href="https://hh.ru/vacancy/137144342" target="_blank" rel="noopener">Амбассадор Primo IT по CRM, 1С, AI и автоматизации бизнеса</a></td>
+        <td>Примо Айти</td>
+        <td>1–3 года</td>
+        <td class="num">252 000 ₽</td>
+      </tr><tr>
+        <td><a href="https://hh.ru/vacancy/134671074" target="_blank" rel="noopener">Backend-разработчик</a></td>
+        <td>Fractalla Design, Студия</td>
+        <td>1–3 года</td>
+        <td class="num">250 000 ₽</td>
+      </tr><tr>
+        <td><a href="https://hh.ru/vacancy/135156433" target="_blank" rel="noopener">Fullstack Web Developer</a></td>
+        <td>Литвин Даниил Игоревич</td>
+        <td>1–3 года</td>
+        <td class="num">250 000 ₽</td>
+      </tr><tr>
+        <td><a href="https://hh.ru/vacancy/136001977" target="_blank" rel="noopener">Python Backend Developer</a></td>
+        <td>Miles&amp;Miles</td>
+        <td>1–3 года</td>
+        <td class="num">250 000 ₽</td>
+      </tr><tr>
+        <td><a href="https://hh.ru/vacancy/137428040" target="_blank" rel="noopener">Python Backend Developer</a></td>
+        <td>Miles&amp;Miles</td>
+        <td>1–3 года</td>
+        <td class="num">250 000 ₽</td>
+      </tr><tr>
+        <td><a href="https://hh.ru/vacancy/138434393" target="_blank" rel="noopener">Middle+ Fullstack-инженер (необрокер, Node/React + Java/Kotlin)</a></td>
+        <td>Белый Павел Анатольевич</td>
+        <td>1–3 года</td>
+        <td class="num">250 000 ₽</td>
+      </tr><tr>
+        <td><a href="https://hh.ru/vacancy/138639485" target="_blank" rel="noopener">Go Developer / Backend Developer (Golang)</a></td>
+        <td>JeLeApps</td>
+        <td>1–3 года</td>
+        <td class="num">250 000 ₽</td>
+      </tr>
+    </table>
+  </div>
+
+  </div>
+
+  
+  <h2>Куда движется рынок <span style="color:var(--muted); font-weight:400; font-size:13px">(прогноз модели Claude, не данные — обновляется при AI-анализе)</span></h2>
+  <div class="panel">
+    <p style="color:var(--ink-2)">Судя по составу свежих вакансий (LLM в топ-15, отдельные роли «AI-инженер по оценке качества», «Prompt Engineer», спрос на агентные системы), в ближайший год сильнее всего вырастут:</p>
+    <div style="margin-top:10px">
+      <span class="pill req">AI-агенты и tool calling</span><span class="pill req">LLM Evaluation (Ragas, LangSmith)</span><span class="pill req">MCP и интеграции моделей</span><span class="pill req">RAG-пайплайны</span><span class="pill req">AI-автоматизация процессов (n8n, Claude Code)</span>
+    </div>
+    <p style="color:var(--muted); font-size:12.5px; margin-top:10px">Прогноз станет проверяемым: ежедневные снимки навыков уже копятся, и через месяц здесь будут реальные кривые роста вместо экспертной оценки.</p>
+  </div>
+
+  <div class="detail">
+  
+  <h2>AI-анализ вакансий <span style="color:var(--muted); font-weight:400; font-size:13px">(24 проанализировано · Claude)</span></h2>
+  <div class="ai-grid">
+    
+    <div class="ai-card">
+      <h3><a href="https://hh.ru/vacancy/135019647" target="_blank" rel="noopener">Инженер по ИИ и автоматизации производственных процессов</a></h3>
+      <div class="ai-meta">НПК Компенз · <span class="ai-level">Middle</span> · сложность 6/10 · оценка 140 000 ₽</div>
+      <div><span class="pill req">Python</span><span class="pill req">ML полный цикл</span><span class="pill req">SQL</span><span class="pill req">scikit-learn/XGBoost</span><span class="pill req">REST API</span><span class="pill req">Docker</span><span class="pill req">Коммуникации с непрофильными специалистами</span><span class="pill">Computer Vision</span><span class="pill">LLM для документов</span><span class="pill">ERP/MES/SCADA</span></div>
+      <ol class="roadmap"><li>Python + SQL + основы ML (scikit-learn)</li><li>Сделать 2 проекта: прогноз и классификация на реальных данных</li><li>Изучить упаковку моделей: REST API + Docker</li><li>Кейс с измеримым эффектом (экономия часов/денег)</li></ol>
+    </div>
+    <div class="ai-card">
+      <h3><a href="https://hh.ru/vacancy/135022143" target="_blank" rel="noopener">AdTech R&amp;D / Integration Engineer (Node.js/React)</a></h3>
+      <div class="ai-meta">Сизинцев Роман Александрович · <span class="ai-level">Senior</span> · сложность 7/10 · оценка 250 000 ₽</div>
+      <div><span class="pill req">AdTech/affiliate домен</span><span class="pill req">API-интеграции</span><span class="pill req">Postback/S2S</span><span class="pill req">Трекеры</span><span class="pill req">Node.js</span><span class="pill req">React</span><span class="pill req">Диагностика tracking/attribution</span><span class="pill">AI-инструменты автоматизации</span><span class="pill">Антифрод</span><span class="pill">Монетизация трафика</span></div>
+      <ol class="roadmap"><li>Роль на стыке рекламы и разработки — сильный вариант для маркетологов с техбазой</li><li>Изучить Node.js и работу с API/вебхуками</li><li>Разобраться в трекерах (Keitaro и аналоги) и postback-схемах</li><li>Собрать кейс: автоматизация интеграции офферов</li></ol>
+    </div>
+    <div class="ai-card">
+      <h3><a href="https://hh.ru/vacancy/135023982" target="_blank" rel="noopener">SW Integration Engineer в центр робототехники</a></h3>
+      <div class="ai-meta">Сбер. IT · <span class="ai-level">Middle</span> · сложность 8/10 · оценка 250 000 ₽</div>
+      <div><span class="pill req">Python</span><span class="pill req">C++</span><span class="pill req">ROS1/ROS2</span><span class="pill req">CAN/RS485/Ethernet</span><span class="pill req">Интеграция программных модулей</span><span class="pill">Isaac Sim/MuJoCo</span><span class="pill">Reinforcement Learning</span><span class="pill">Сценические системы</span></div>
+      <ol class="roadmap"><li>Python + C++ база</li><li>Пройти курс по ROS2, собрать симуляцию</li><li>Опыт с реальным железом: Arduino/Raspberry Pi → роботы</li></ol>
+    </div>
+    <div class="ai-card">
+      <h3><a href="https://hh.ru/vacancy/135033425" target="_blank" rel="noopener">Разработчик мобильных интеграций (Flutter / React Native) в офис</a></h3>
+      <div class="ai-meta">Smart Engines · <span class="ai-level">Middle</span> · сложность 7/10 · оценка 200 000 ₽</div>
+      <div><span class="pill req">Flutter или React Native</span><span class="pill req">Нативная разработка Android/iOS</span><span class="pill req">C/C++ (чтение и интеграция)</span><span class="pill req">FFI/JNI</span><span class="pill req">Kotlin/Swift</span><span class="pill">Разработка SDK</span><span class="pill">Computer Vision домен</span></div>
+      <ol class="roadmap"><li>База мобильной разработки: Flutter или RN</li><li>Разобраться в FFI/JNI: обернуть простую C-библиотеку</li><li>Собрать плагин/нативный модуль и опубликовать</li></ol>
+    </div>
+    <div class="ai-card">
+      <h3><a href="https://hh.ru/vacancy/135045563" target="_blank" rel="noopener">Менеджер по продажам B2B | Битрикс24 / amoCRM</a></h3>
+      <div class="ai-meta">Topalov Group · <span class="ai-level">Junior</span> · сложность 3/10 · оценка 100 000 ₽</div>
+      <div><span class="pill req">B2B-продажи (1+ год)</span><span class="pill req">Битрикс24/amoCRM</span><span class="pill req">Переговоры</span><span class="pill req">Анализ бизнес-процессов</span><span class="pill">Настройка CRM с нуля</span><span class="pill">Основы маркетинга</span></div>
+      <ol class="roadmap"><li>Освоить Битрикс24 и amoCRM на уровне уверенного пользователя</li><li>Изучить типовые бизнес-процессы продаж</li><li>Научиться переводить боли клиента в задачи внедрения</li></ol>
+    </div>
+    <div class="ai-card">
+      <h3><a href="https://hh.ru/vacancy/135046210" target="_blank" rel="noopener">ИИ-маркетолог / Интернет-маркетолог (автоматизация, ИИ-агенты)</a></h3>
+      <div class="ai-meta"> · <span class="ai-level">Middle</span> · сложность 5/10 · оценка 150 000 ₽</div>
+      <div><span class="pill req">ИИ-агенты</span><span class="pill req">Claude Code/Cursor</span><span class="pill req">Автоматизация контента</span><span class="pill req">CRM</span><span class="pill req">Лендинги и Core Web Vitals</span><span class="pill req">B2B-маркетинг</span><span class="pill">Финтех-домен</span><span class="pill">Английский</span><span class="pill">Видео-сценарии</span></div>
+      <ol class="roadmap"><li>Освоить Claude Code для сборки сайтов и автоматизаций</li><li>Построить контент-конвейер: данные → генерация → публикация</li><li>Собрать кейс: система, которая делает лиды без ручного труда</li><li>Упаковать портфолио из 2–3 автоматизаций</li></ol>
+    </div>
+    <div class="ai-card">
+      <h3><a href="https://hh.ru/vacancy/135046707" target="_blank" rel="noopener">Middle/Senior Automation QA (Typescript)</a></h3>
+      <div class="ai-meta">Диджитал Лайн · <span class="ai-level">Senior</span> · сложность 7/10 · оценка 240 000 ₽</div>
+      <div><span class="pill req">TypeScript</span><span class="pill req">Cypress/Playwright</span><span class="pill req">Тестирование API и UI</span><span class="pill req">SQL</span><span class="pill req">Agile/Scrum</span><span class="pill req">Английский (документация)</span><span class="pill">React</span><span class="pill">Docker</span><span class="pill">CI/CD</span><span class="pill">K6</span><span class="pill">Мобильная автоматизация</span></div>
+      <ol class="roadmap"><li>Теория тестирования + JavaScript/TypeScript</li><li>Освоить Playwright: UI и API тесты</li><li>Встроить тесты в CI/CD (GitHub Actions)</li><li>Кейс: покрытие автотестами реального сайта</li></ol>
+    </div>
+    <div class="ai-card">
+      <h3><a href="https://hh.ru/vacancy/135054188" target="_blank" rel="noopener">AI-инженер</a></h3>
+      <div class="ai-meta">Сбер. IT · <span class="ai-level">Middle</span> · сложность 7/10 · оценка 280 000 ₽</div>
+      <div><span class="pill req">LLM (1.5–2 года практики)</span><span class="pill req">Prompt Engineering (Few-shot, CoT, ReAct)</span><span class="pill req">Ragas/LangSmith/DSPy</span><span class="pill req">Python</span><span class="pill req">NLP-метрики</span><span class="pill req">Синтетические датасеты</span><span class="pill">A/B-эксперименты</span><span class="pill">Аналитика данных</span></div>
+      <ol class="roadmap"><li>Освоить промптинг и работу с API моделей</li><li>Изучить evaluation: Ragas, LangSmith — прогнать на своём проекте</li><li>Построить систему метрик для своего AI-агента</li><li>Оформить кейс: как метрики улучшили качество бота</li></ol>
+    </div>
+    <div class="ai-card">
+      <h3><a href="https://hh.ru/vacancy/135055022" target="_blank" rel="noopener">ML-инженер (LLM) — платформа Cortex24</a></h3>
+      <div class="ai-meta">ПК Марка · <span class="ai-level">Middle</span> · сложность 7/10 · оценка 185 000 ₽</div>
+      <div><span class="pill req">Python</span><span class="pill req">LLM (промпты, tool-calling)</span><span class="pill req">RAG/матчинг</span><span class="pill req">Метрики качества</span><span class="pill req">Обработка документов (PDF/DOCX)</span><span class="pill">Prompt caching</span><span class="pill">Домен госзакупок</span><span class="pill">Гибридный скоринг</span></div>
+      <ol class="roadmap"><li>Python + работа с LLM API</li><li>Научиться извлекать структуру из документов (PDF → JSON)</li><li>Собрать пайплайн: документ → извлечение → матчинг → метрики</li><li>Кейс: автоматизация обработки документов для бизнеса</li></ol>
+    </div>
+    <div class="ai-card">
+      <h3><a href="https://hh.ru/vacancy/135055752" target="_blank" rel="noopener">Инженер по ручному тестированию (backend)</a></h3>
+      <div class="ai-meta">Петрович-Тех · <span class="ai-level">Middle</span> · сложность 5/10 · оценка 150 000 ₽</div>
+      <div><span class="pill req">Теория тестирования</span><span class="pill req">SQL (select, join)</span><span class="pill req">Postman/SoapUI</span><span class="pill req">Bash</span><span class="pill req">Kafka/ActiveMQ</span><span class="pill req">Jira</span><span class="pill req">Kibana</span><span class="pill">1С</span><span class="pill">Docker</span><span class="pill">Kubernetes</span></div>
+      <ol class="roadmap"><li>Теория тестирования + тест-дизайн</li><li>SQL и Bash до практического уровня</li><li>Postman: коллекции, автопроверки</li><li>Разобраться в брокерах сообщений на уровне тестировщика</li></ol>
+    </div>
+    <div class="ai-card">
+      <h3><a href="https://hh.ru/vacancy/135056795" target="_blank" rel="noopener">QA-инженер — Backend (Java)</a></h3>
+      <div class="ai-meta">Т-Банк. ИТ. Разработка · <span class="ai-level">Middle</span> · сложность 6/10 · оценка 220 000 ₽</div>
+      <div><span class="pill req">Теория тестирования</span><span class="pill req">Автотесты Java/Kotlin (1+ год)</span><span class="pill req">SQL</span><span class="pill req">REST/SOAP API</span><span class="pill req">Kafka/RabbitMQ</span><span class="pill req">GitLab CI</span><span class="pill">Oracle</span><span class="pill">Ignite</span><span class="pill">Системы логирования</span></div>
+      <ol class="roadmap"><li>Выучить теорию тестирования и тест-дизайн</li><li>SQL до уровня JOIN/группировок</li><li>Java + автотесты (JUnit, REST Assured)</li><li>Практика с Postman и Kafka на пет-проекте</li></ol>
+    </div>
+    <div class="ai-card">
+      <h3><a href="https://hh.ru/vacancy/135058328" target="_blank" rel="noopener">React Native разработчик (Middle+/Senior, TypeScript)</a></h3>
+      <div class="ai-meta">Тихонова Анастасия Андреевна · <span class="ai-level">Senior</span> · сложность 7/10 · оценка 200 000 ₽</div>
+      <div><span class="pill req">React Native</span><span class="pill req">TypeScript</span><span class="pill req">Redux Toolkit + RTK Query</span><span class="pill req">React Navigation</span><span class="pill req">Нативные модули (Kotlin/Swift)</span><span class="pill req">Gradle/CocoaPods</span><span class="pill req">Git</span><span class="pill">Yandex MapKit</span><span class="pill">CI/CD (fastlane)</span><span class="pill">Jest/Detox</span><span class="pill">New Architecture (Fabric)</span></div>
+      <ol class="roadmap"><li>База: React + TypeScript</li><li>Перейти на React Native CLI, собрать приложение с навигацией и стейтом</li><li>Научиться писать нативный модуль под Android и iOS</li><li>Выпустить своё приложение в стор — это готовый кейс</li></ol>
+    </div>
+  </div>
+  </div>
+
+  <p class="footer">Job Intelligence v0.1 · сбор: страницы поиска hh.ru (8560 вакансий, 7706 с полным описанием) · зарплаты: середина вилки, gross → net ×0.87 · это исследовательский срез, не оферта</p>
+</div>
+<div id="tip"></div>
+<script>
+  const modeBtn = document.getElementById('modeBtn');
+  modeBtn.addEventListener('click', () => {
+    const on = document.body.classList.toggle('insights');
+    modeBtn.textContent = on ? 'Показать всё' : 'Только выводы';
+  });
+  const tip = document.getElementById('tip');
+  document.querySelectorAll('[data-tip]').forEach((el) => {
+    el.addEventListener('mousemove', (e) => {
+      tip.textContent = el.dataset.tip;
+      tip.style.opacity = '1';
+      tip.style.left = Math.min(e.clientX + 14, innerWidth - 340) + 'px';
+      tip.style.top = (e.clientY + 16) + 'px';
+    });
+    el.addEventListener('mouseleave', () => { tip.style.opacity = '0'; });
+  });
+</script>
+</body>
+</html>
