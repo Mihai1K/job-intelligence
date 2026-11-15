@@ -66,7 +66,7 @@ All scripts are listed in `package.json`.
 ## Status and limitations
 
 - A single-user tool that I use for my own job search. No tests.
-- Collection reads public vacancy pages and depends on the site's markup; it can break when the markup changes. Use it only for personal analysis and within the site's terms. The multi-user version ([job-intelligence-saas](https://github.com/Mihai1K/job-intelligence-saas)) is designed around the official OAuth API instead.
+- Collection reads public vacancy pages and depends on the site's markup; it can break when the markup changes. Use it only for personal analysis and within the site's terms. The multi-user version (a separate private repository) is designed around the official OAuth API instead.
 - My profile, the database and generated letters are not part of this repository.
 - See `docs/KNOWN_LIMITATIONS.md`.
 
